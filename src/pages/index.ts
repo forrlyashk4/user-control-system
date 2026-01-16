@@ -1,1 +1,2 @@
-export { AuthPage } from "./ui";
+export { LoginPage } from "./login";
+export { NotFound } from "./404";
