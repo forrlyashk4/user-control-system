@@ -1,1 +1,0 @@
-export { fetchUsers } from "./user-api";

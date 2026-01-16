@@ -1,1 +1,0 @@
-export { useUsersQuery } from "./model";
