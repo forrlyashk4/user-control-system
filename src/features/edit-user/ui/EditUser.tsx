@@ -1,9 +1,10 @@
 import React from "react";
-import { Form, Input, Modal } from "antd";
+import { Button, Form, Input, Modal } from "antd";
 import { styled } from "styled-components";
-import { useCreateUser } from "@/entities";
+import { useDeleteUser, useEditUser, User, DeleteUserDto } from "@/entities";
 
 type FieldType = {
+  id?: string;
   name?: string;
   avatar?: string;
 };
@@ -25,22 +26,33 @@ const StyledForm = styled(Form)<AntdFormProps>`
   }
 `;
 
-export default function AddUser({
+export default function EditUser({
+  user,
   isOpen,
   setIsOpen,
 }: {
+  user: User | undefined;
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const [form] = Form.useForm();
   const [errors, setErrors] = React.useState<string[]>([]);
-  const { mutate } = useCreateUser();
+  const { mutate: mutateEdit } = useEditUser();
+  const { mutate: mutateDel } = useDeleteUser();
+
+  React.useEffect(() => {
+    if (user) {
+      form.setFieldsValue(user);
+    } else {
+      form.resetFields();
+    }
+  }, [user]);
 
   function handleOk() {
     form
       .validateFields()
       .then((values) => {
-        mutate(values, {
+        mutateEdit(values, {
           onSuccess: () => {
             form.resetFields();
             setIsOpen(false);
@@ -53,20 +65,39 @@ export default function AddUser({
       .catch((err) => console.log(err));
   }
 
+  function handleDelete(user: DeleteUserDto) {
+    if (!user.id) return;
+
+    mutateDel(user, {
+      onSuccess: () => {
+        form.resetFields();
+        setIsOpen(false);
+      },
+      onError: (err) => {
+        setErrors([err.message]);
+      },
+    });
+  }
+
   return (
     <Modal
-      title="Создание пользователя"
+      title="Редактирование пользователя"
       destroyOnHidden
       open={isOpen}
       onOk={handleOk}
-      okText="Создать"
+      okText="Сохранить"
       onCancel={() => setIsOpen(false)}
       cancelText="Отмена"
       footer={(_, { OkBtn, CancelBtn }) => (
-        <>
-          <OkBtn />
-          <CancelBtn />
-        </>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <Button onClick={() => user?.id && handleDelete({ id: user.id })}>
+            Удалить
+          </Button>
+          <div style={{ display: "flex", gap: "8px" }}>
+            <OkBtn />
+            <CancelBtn />
+          </div>
+        </div>
       )}
     >
       <StyledForm
@@ -75,6 +106,14 @@ export default function AddUser({
         autoComplete="off"
         form={form}
       >
+        <Form.Item<FieldType>
+          name="id"
+          rules={[{ required: true, message: "id" }]}
+          label="id"
+        >
+          <Input disabled />
+        </Form.Item>
+
         <Form.Item<FieldType>
           name="name"
           rules={[{ required: true, message: "Введите имя" }]}

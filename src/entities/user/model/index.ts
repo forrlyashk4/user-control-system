@@ -1,2 +1,12 @@
-export { type User, type CreateUserDto } from "./types";
-export { useUsersQuery, useCreateUser } from "./queries";
+export {
+  type User,
+  type CreateUserDto,
+  type EditUserDto,
+  type DeleteUserDto,
+} from "./types";
+export {
+  useUsersQuery,
+  useCreateUser,
+  useEditUser,
+  useDeleteUser,
+} from "./queries";

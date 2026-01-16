@@ -14,6 +14,7 @@ import { User } from "@/entities/user/model";
 import { onLogout } from "@/features/auth";
 import { useNavigate } from "react-router-dom";
 import { AddUser } from "@/features/add-user";
+import { EditUser } from "@/features/edit-user";
 
 const StyledFlex = styled(Flex)<FlexProps>`
   width: 512px;
@@ -52,8 +53,12 @@ export function UsersPage() {
 
   const [isCreateModal, setCreateModal] = React.useState(false);
 
-  function openEditModal() {
-    console.log("edit modal opened");
+  const [isEditModal, setEditModal] = React.useState(false);
+  const [currentUser, setCurrentUser] = React.useState<User | undefined>();
+
+  function openEditModal(user: User) {
+    setCurrentUser(user);
+    setEditModal(true);
   }
 
   function openCreateModal() {
@@ -62,8 +67,12 @@ export function UsersPage() {
 
   return (
     <>
-      {" "}
       <AddUser isOpen={isCreateModal} setIsOpen={setCreateModal} />
+      <EditUser
+        user={currentUser}
+        isOpen={isEditModal}
+        setIsOpen={setEditModal}
+      />
       <StyledFlex justify="center" align="center" vertical>
         <Button
           className="logout-button"
@@ -79,9 +88,17 @@ export function UsersPage() {
           renderItem={(item) => (
             <List.Item>
               <List.Item.Meta
-                avatar={<Avatar onClick={openEditModal} src={item.avatar} />}
+                avatar={
+                  <Avatar
+                    onClick={() => openEditModal(item)}
+                    src={item.avatar}
+                  />
+                }
                 title={
-                  <span onClick={openEditModal} className="user-item-name">
+                  <span
+                    onClick={() => openEditModal(item)}
+                    className="user-item-name"
+                  >
                     {item.name}
                   </span>
                 }
