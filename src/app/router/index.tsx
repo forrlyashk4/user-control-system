@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { AuthPage } from "@/pages";
+import { LoginPage, NotFound } from "@/pages";
 import { PublicRoute } from "./PublicRoute";
 import { ProtectedRoute } from "./PrivateRoute";
 
@@ -12,7 +12,7 @@ export const Router = () => {
           path="/login"
           element={
             <PublicRoute>
-              <AuthPage />
+              <LoginPage />
             </PublicRoute>
           }
         />
@@ -24,14 +24,7 @@ export const Router = () => {
             </ProtectedRoute>
           }
         />
-        <Route
-          path="*"
-          element={
-            <ProtectedRoute>
-              <h1>todo: 404</h1>
-            </ProtectedRoute>
-          }
-        />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   );
