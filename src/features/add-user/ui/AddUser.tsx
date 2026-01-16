@@ -1,5 +1,5 @@
 import React from "react";
-import { Form, Input, Modal } from "antd";
+import { Button, Form, Input, Modal } from "antd";
 import { styled } from "styled-components";
 import { useCreateUser } from "@/entities";
 
@@ -34,7 +34,7 @@ export default function AddUser({
 }) {
   const [form] = Form.useForm();
   const [errors, setErrors] = React.useState<string[]>([]);
-  const { mutate } = useCreateUser();
+  const { mutate, isPending } = useCreateUser();
 
   function handleOk() {
     form
@@ -50,7 +50,7 @@ export default function AddUser({
           },
         });
       })
-      .catch((err) => console.log(err));
+      .catch((err) => err);
   }
 
   return (
@@ -58,22 +58,31 @@ export default function AddUser({
       title="Создание пользователя"
       destroyOnHidden
       open={isOpen}
-      onOk={handleOk}
-      okText="Создать"
-      onCancel={() => setIsOpen(false)}
-      cancelText="Отмена"
-      footer={(_, { OkBtn, CancelBtn }) => (
-        <>
-          <OkBtn />
-          <CancelBtn />
-        </>
+      footer={() => (
+        <div style={{ display: "flex", gap: "8px" }}>
+          <Button type="primary" disabled={isPending} onClick={handleOk}>
+            Сохранить
+          </Button>
+          <Button
+            type="primary"
+            disabled={isPending}
+            onClick={() => setIsOpen(false)}
+          >
+            Отмена
+          </Button>
+        </div>
       )}
+      closable={!isPending}
+      maskClosable={!isPending}
+      keyboard={!isPending}
+      confirmLoading={isPending}
     >
       <StyledForm
         name="basic"
         initialValues={{ remember: true }}
         autoComplete="off"
         form={form}
+        disabled={isPending}
       >
         <Form.Item<FieldType>
           name="name"
@@ -85,7 +94,10 @@ export default function AddUser({
 
         <Form.Item<FieldType>
           name="avatar"
-          rules={[{ required: true, message: "Введите ссылку на аватар" }]}
+          rules={[
+            { required: true, message: "Введите ссылку на аватар" },
+            { type: "url", message: "Введите корректную ссылку" },
+          ]}
           label="Ссылка на аватарку"
         >
           <Input />

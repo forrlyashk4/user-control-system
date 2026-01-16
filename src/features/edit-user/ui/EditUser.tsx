@@ -37,8 +37,10 @@ export default function EditUser({
 }) {
   const [form] = Form.useForm();
   const [errors, setErrors] = React.useState<string[]>([]);
-  const { mutate: mutateEdit } = useEditUser();
-  const { mutate: mutateDel } = useDeleteUser();
+  const { mutate: mutateEdit, isPending: isEditPending } = useEditUser();
+  const { mutate: mutateDel, isPending: isDeletePending } = useDeleteUser();
+
+  const isLoading = isEditPending || isDeletePending;
 
   React.useEffect(() => {
     if (user) {
@@ -62,7 +64,7 @@ export default function EditUser({
           },
         });
       })
-      .catch((err) => console.log(err));
+      .catch((err) => err);
   }
 
   function handleDelete(user: DeleteUserDto) {
@@ -84,27 +86,40 @@ export default function EditUser({
       title="Редактирование пользователя"
       destroyOnHidden
       open={isOpen}
-      onOk={handleOk}
-      okText="Сохранить"
-      onCancel={() => setIsOpen(false)}
-      cancelText="Отмена"
-      footer={(_, { OkBtn, CancelBtn }) => (
+      footer={() => (
         <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <Button onClick={() => user?.id && handleDelete({ id: user.id })}>
+          <Button
+            type="primary"
+            disabled={isLoading}
+            onClick={() => user?.id && handleDelete({ id: user.id })}
+          >
             Удалить
           </Button>
           <div style={{ display: "flex", gap: "8px" }}>
-            <OkBtn />
-            <CancelBtn />
+            <Button type="primary" disabled={isLoading} onClick={handleOk}>
+              Сохранить
+            </Button>
+            <Button
+              type="primary"
+              disabled={isLoading}
+              onClick={() => setIsOpen(false)}
+            >
+              Отмена
+            </Button>
           </div>
         </div>
       )}
+      closable={!isLoading}
+      maskClosable={!isLoading}
+      keyboard={!isLoading}
+      confirmLoading={isEditPending}
     >
       <StyledForm
         name="basic"
         initialValues={{ remember: true }}
         autoComplete="off"
         form={form}
+        disabled={isLoading}
       >
         <Form.Item<FieldType>
           name="id"
@@ -124,7 +139,10 @@ export default function EditUser({
 
         <Form.Item<FieldType>
           name="avatar"
-          rules={[{ required: true, message: "Введите ссылку на аватар" }]}
+          rules={[
+            { required: true, message: "Введите ссылку на аватар" },
+            { type: "url", message: "Введите корректную ссылку" },
+          ]}
           label="Ссылка на аватарку"
         >
           <Input />
