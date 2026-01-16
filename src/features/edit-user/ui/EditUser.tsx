@@ -86,6 +86,7 @@ export default function EditUser({
       title="Редактирование пользователя"
       destroyOnHidden
       open={isOpen}
+      onCancel={() => setIsOpen(false)}
       footer={() => (
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <Button

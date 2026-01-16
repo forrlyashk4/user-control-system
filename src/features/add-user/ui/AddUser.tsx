@@ -58,6 +58,7 @@ export default function AddUser({
       title="Создание пользователя"
       destroyOnHidden
       open={isOpen}
+      onCancel={() => setIsOpen(false)}
       footer={() => (
         <div style={{ display: "flex", gap: "8px" }}>
           <Button type="primary" disabled={isPending} onClick={handleOk}>
