@@ -32,19 +32,6 @@ const StyledForm = styled(Form)<AntdFormProps>`
   .ant-form-item:last-child {
     text-align: right;
   }
-
-  .ant-btn {
-    background: #302aa5;
-    border-color: #302aa5;
-  }
-
-  .ant-btn:disabled {
-    color: lightgray;
-  }
-
-  .ant-btn-variant-solid:not(:disabled):not(.ant-btn-disabled):hover {
-    background: #372fce;
-  }
 `;
 
 export const AuthForm: React.FC<AuthFormProps> = ({ onRedirect }) => {

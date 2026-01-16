@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { LoginPage, NotFound } from "@/pages";
+import { LoginPage, NotFound, UsersPage } from "@/pages";
 import { PublicRoute } from "./PublicRoute";
 import { ProtectedRoute } from "./PrivateRoute";
 
@@ -20,7 +20,7 @@ export const Router = () => {
           path="/users"
           element={
             <ProtectedRoute>
-              <h1>todo: Страница пользователей</h1>
+              <UsersPage />
             </ProtectedRoute>
           }
         />

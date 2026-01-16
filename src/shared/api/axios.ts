@@ -1,8 +1,10 @@
 import axios from "axios";
 import { loginMock } from "./login.mock";
 
+const baseURL = `${process.env.API_URL ?? ""}${process.env.API_PREFIX ?? ""}`;
+
 export const api = axios.create({
-  baseURL: "/api/v1",
+  baseURL,
 });
 
 api.interceptors.request.use(async (config) => {
