@@ -25,10 +25,6 @@ const StyledForm = styled(Form)<AntdFormProps>`
     margin-bottom: 15px;
   }
 
-  .ant-form-item-control {
-    min-width: 100%;
-  }
-
   .ant-form-item:last-child {
     text-align: right;
   }
@@ -63,8 +59,6 @@ export const AuthForm: React.FC<AuthFormProps> = ({ onRedirect }) => {
       {contextHolder}
       <StyledForm
         name="basic"
-        labelCol={{ span: 8 }}
-        wrapperCol={{ span: 16 }}
         initialValues={{ remember: true }}
         onFinish={(values) => onSubmit(values as FieldType)}
         autoComplete="off"
